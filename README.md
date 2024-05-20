@@ -16,7 +16,7 @@ Entre los parámetros ingresados tenemos:
 - __uri__ : direccion del broker MQTT a utilizar.
 - __conn__:  Callback que se llama al lograr la conexión con el servidor MQTT.
 - __discon__: Callback que se llama al desconectarse del servidor.
-- __data_received: Callback que se llama cuando se reciben datos.
+- __data_received__: Callback que se llama cuando se reciben datos.
 
 El callback ``data_received` tiene el siguiente formato:
 ```
