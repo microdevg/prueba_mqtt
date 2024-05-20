@@ -2,7 +2,15 @@
 #define _BASE_H
 
 #include "esp_err.h"
+#include <stddef.h>
+#include <string.h>
+#include <stdint.h>
+#include <inttypes.h>
+#include "esp_event.h"
 
+
+
+typedef void (*callback_data_t)(char* data, char* topic);
 
 
 typedef void (*esp_callback_t)(void);
