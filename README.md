@@ -4,7 +4,10 @@
 
 Utilizando un driver WiFi con soporte para callback llamo a `mqtt_init()` para iniciar la configuración del cliente MQTT.
 ```
-esp_err_t mqtt_init(const char* uri, esp_callback_t conn, esp_callback_t disconn,callback_data_t data_received);
+esp_err_t mqtt_init(const char* uri,
+                    esp_callback_t conn,
+                    esp_callback_t disconn,
+                    callback_data_t data_received);
 
 
 ```
