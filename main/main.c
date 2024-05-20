@@ -34,8 +34,8 @@ void app_main(void)
 
    wifi_connect(WIFI_ID,WIFI_PASS,WIFI_CONNECTED,WIFI_DISCONNECTED);
    vTaskDelay(15000/ portTICK_PERIOD_MS);
-   printf("Desconectado wifi\n");
-   wifi_desconnect();
+   //printf("Desconectado wifi\n");
+   //wifi_desconnect();
 
 
     while(1){

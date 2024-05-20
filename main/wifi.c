@@ -7,25 +7,14 @@
 #include <string.h>
 #include "debug.h"
 
-#define RCONN_TRY_MAX                   5
+#define RCONN_TRY_MAX                   10
 
 uint8_t reconnect_try = 0;
 
 
 
-wifi_callback_t __callback_connection = NULL;
-wifi_callback_t __callback_disconnection = NULL;
-
-
-
- void callback_connect(){
-    DEBUG_PRINT("callback connexion\n");
-}
-
- void callback_disconnect(){   
-     DEBUG_PRINT("callback desconexion\n");
-
-}
+esp_callback_t __callback_connection = NULL;
+esp_callback_t __callback_disconnection = NULL;
 
 
 
@@ -36,25 +25,32 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     // WiFi esta listo para conectarse a una red en modo STATION.
     if(event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START){
         printf("WiFi modo station listo para conectarse a red\n");
-        esp_wifi_connect();
-    }else if(event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED){
-        if(reconnect_try < RCONN_TRY_MAX){
-            printf("Wifi desconectado, intentando reconexion:%u / %u\n",reconnect_try,RCONN_TRY_MAX);
-            reconnect_try ++;
-            esp_wifi_connect();
-        }else{
-            printf("Fallaron los intentos de reconexion\n");
-        }
+        esp_wifi_connect();}
+    
+    else if(event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED){
+            if(reconnect_try < RCONN_TRY_MAX){
+                printf("Wifi desconectado, intentando reconexion:%u / %u\n",
+                reconnect_try,
+                RCONN_TRY_MAX);
+                
+                reconnect_try ++;
+                esp_wifi_connect();}
+            else{
+                printf("Fallaron los intentos de reconexion\n");
+                }
+            return;
     }
    
     if (event_id == WIFI_EVENT_STA_CONNECTED){
     printf("WiFi conectado\n");
     reconnect_try = 0;
-    __callback_connection();
+    CHECK_RUN_F( __callback_connection);
+    return;
     }
-     if (event_id == WIFI_EVENT_STA_DISCONNECTED){
+    if (event_id == WIFI_EVENT_STA_DISCONNECTED){
     printf("WiFi desconectado\n");
-    __callback_disconnection();
+    CHECK_RUN_F(__callback_disconnection);
+    return;
     }
 
 }
@@ -73,12 +69,12 @@ esp_err_t config_nvs_pre_connection(){
 
 
  esp_err_t wifi_connect(const char* WIFI_ID, const char * PASS,
-                        wifi_callback_t cb_conn , 
-                        wifi_callback_t cb_disconn ){
+                        esp_callback_t cb_conn , 
+                        esp_callback_t cb_disconn ){
     
     // Asigno los callback recibidos por parámetro o los por defecto
-    __callback_connection = (cb_conn == NULL)?callback_connect: cb_conn;
-    __callback_disconnection = (cb_disconn == NULL)? callback_disconnect : cb_disconn;
+    __callback_connection = cb_conn ;
+    __callback_disconnection = cb_disconn ;
 
     esp_err_t err = ESP_OK;
     ESP_ERROR_CHECK(err = config_nvs_pre_connection());

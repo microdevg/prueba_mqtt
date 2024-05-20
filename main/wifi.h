@@ -1,9 +1,8 @@
 #ifndef _WIFI_H
 #define _WIFI_H
-#include "esp_err.h"
+#include  "base.h"
 
 
-typedef void(*wifi_callback_t)(void);
 
 
 
@@ -20,7 +19,7 @@ typedef void(*wifi_callback_t)(void);
  * @return esp_err_t 
  */
  esp_err_t wifi_connect(const char* WIFI_ID, const char * PASS,
-                        wifi_callback_t cb_conn, wifi_callback_t cb_desconn);
+                        esp_callback_t cb_conn, esp_callback_t cb_desconn);
 
 /**
  * @brief Libera los recursos asignados al WiFi.
